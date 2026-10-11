@@ -45,7 +45,7 @@ const createLocation = async (req, res) => {
 
 const getMyLocations = async (req, res) => {
   const [locations] = await pool.query(
-    "SELECT * FROM customer_locations WHERE user_id = ? ORDER BY created_at DESC",
+    "SELECT * FROM customer_locations WHERE user_id = ? ORDER BY is_favourite DESC, created_at DESC",
     [req.user.id]
   );
   res.json(locations);
@@ -106,4 +106,18 @@ const deleteLocation = async (req, res) => {
   res.json({ message: "Location deleted" });
 };
 
-module.exports = { createLocation, getMyLocations, getLocationById, updateLocation, deleteLocation };
+const toggleFavourite = async (req, res) => {
+  const [result] = await pool.query(
+    "UPDATE customer_locations SET is_favourite = 1 - is_favourite WHERE id = ? AND user_id = ?",
+    [req.params.id, req.user.id]
+  );
+  if (!result.affectedRows) return res.status(404).json({ message: "Location not found" });
+
+  const [locations] = await pool.query(
+    "SELECT id, is_favourite FROM customer_locations WHERE id = ?",
+    [req.params.id]
+  );
+  res.json({ message: "Favourite updated", is_favourite: Boolean(locations[0].is_favourite) });
+};
+
+module.exports = { createLocation, getMyLocations, getLocationById, updateLocation, deleteLocation, toggleFavourite };

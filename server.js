@@ -12,6 +12,8 @@ const truckRoutes = require("./routes/truckRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const scheduleRoutes = require("./routes/scheduleRoutes");
+const driverRatingRoutes = require("./routes/driverRatingRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -52,6 +54,8 @@ app.use("/api/trucks", truckRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/schedules", scheduleRoutes);
+app.use("/api/driver-ratings", driverRatingRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });

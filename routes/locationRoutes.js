@@ -4,7 +4,8 @@ const {
   getMyLocations,
   getLocationById,
   updateLocation,
-  deleteLocation
+  deleteLocation,
+  toggleFavourite
 } = require("../controllers/locationController");
 const { protect } = require("../middleware/authMiddleware");
 const { allowRoles } = require("../middleware/roleMiddleware");
@@ -16,6 +17,7 @@ router.use(protect, allowRoles("customer"));
 router.post("/", createLocation);
 router.get("/my-locations", getMyLocations);
 router.get("/:id", getLocationById);
+router.put("/:id/favourite", toggleFavourite);
 router.put("/:id", updateLocation);
 router.delete("/:id", deleteLocation);
 

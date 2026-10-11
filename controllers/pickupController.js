@@ -61,11 +61,14 @@ const getPickupById = async (req, res) => {
   const [requests] = await pool.query(
     `SELECT pr.*, wc.name AS waste_type, cl.location_name, cl.district, cl.address_details,
             pa.id AS assignment_id, pa.driver_id, pa.truck_id, pa.status AS assignment_status,
-            pa.collection_notes, pa.failure_reason, pa.waste_quantity_collected, pa.proof_photo
+            pa.collection_notes, pa.failure_reason, pa.waste_quantity_collected, pa.proof_photo,
+            du.full_name AS driver_name,
+            (SELECT COUNT(*) FROM driver_ratings dr WHERE dr.pickup_request_id = pr.id) AS driver_rated
      FROM pickup_requests pr
      JOIN waste_categories wc ON wc.id = pr.waste_category_id
      JOIN customer_locations cl ON cl.id = pr.location_id
      LEFT JOIN pickup_assignments pa ON pa.pickup_request_id = pr.id
+     LEFT JOIN users du ON du.id = pa.driver_id
      WHERE pr.id = ? ${ownerClause}`,
     params
   );
