@@ -82,3 +82,18 @@ INSERT INTO notifications (user_id, title, message, status) VALUES
 (8, 'Pickup received', 'Your pickup request has been received by CleanTrack Uganda.', 'unread'),
 (4, 'New assignment', 'You have a new pickup assignment in Kampala.', 'unread'),
 (2, 'Pending hazardous pickup', 'A hazardous pickup request needs assignment.', 'unread');
+
+-- Feature 3 sample data: Sarah marks her home as a favourite location.
+UPDATE customer_locations SET is_favourite = 1 WHERE id = 1;
+
+-- Feature 2 sample data: customers rate drivers on their collected pickups.
+INSERT INTO driver_ratings (pickup_request_id, customer_id, driver_id, rating, comment) VALUES
+(4, 10, 6, 5, 'Isaac arrived early and kept the compound clean.'),
+(9, 10, 6, 4, 'Good collection, but came later than expected.'),
+(12, 13, 5, 5, 'Very professional plastic sorting help.');
+
+-- Feature 1 sample data: weekly mixed-waste schedule for Sarah's home,
+-- starting next Monday; the next four pickups are generated at runtime by the API.
+INSERT INTO pickup_schedules (user_id, location_id, waste_category_id, frequency, start_date, next_run_date, urgency, status) VALUES
+(8, 1, 6, 'weekly', CURDATE() + INTERVAL ((9 - WEEKDAY(CURDATE())) % 7) DAY,
+ CURDATE() + INTERVAL ((9 - WEEKDAY(CURDATE())) % 7) DAY, 'normal', 'active');

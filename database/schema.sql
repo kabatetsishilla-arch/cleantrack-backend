@@ -26,6 +26,7 @@ CREATE TABLE customer_locations (
   address_details TEXT,
   latitude DECIMAL(10, 8),
   longitude DECIMAL(11, 8),
+  is_favourite TINYINT(1) NOT NULL DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -118,6 +119,36 @@ CREATE TABLE pickup_feedback (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (pickup_request_id) REFERENCES pickup_requests(id) ON DELETE CASCADE,
   FOREIGN KEY (customer_id) REFERENCES users(id)
+);
+
+CREATE TABLE pickup_schedules (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  location_id INT NOT NULL,
+  waste_category_id INT NOT NULL,
+  frequency ENUM('weekly', 'biweekly', 'monthly') NOT NULL,
+  start_date DATE NOT NULL,
+  next_run_date DATE NOT NULL,
+  urgency ENUM('normal', 'urgent') NOT NULL DEFAULT 'normal',
+  status ENUM('active', 'paused') NOT NULL DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (location_id) REFERENCES customer_locations(id) ON DELETE CASCADE,
+  FOREIGN KEY (waste_category_id) REFERENCES waste_categories(id)
+);
+
+CREATE TABLE driver_ratings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  pickup_request_id INT NOT NULL UNIQUE,
+  customer_id INT NOT NULL,
+  driver_id INT NOT NULL,
+  rating INT NOT NULL,
+  comment TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (pickup_request_id) REFERENCES pickup_requests(id) ON DELETE CASCADE,
+  FOREIGN KEY (customer_id) REFERENCES users(id),
+  FOREIGN KEY (driver_id) REFERENCES users(id)
 );
 
 CREATE TABLE notifications (
