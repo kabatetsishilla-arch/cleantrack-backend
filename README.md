@@ -36,6 +36,14 @@ CleanTrack Uganda is a student-learning waste management API built with Node.js,
    npm run db:setup
    ```
 
+For an existing database created before the new features, apply the additive migrations instead of recreating data:
+
+```bash
+npm run db:migrate
+```
+
+Migration files live in `database/migrations/` and only add the new feature tables/columns.
+
 For the default local setup used in this project, the MariaDB/MySQL username and password are both `root`:
 
 ```env
@@ -142,6 +150,26 @@ Assignments:
 - `PUT /api/assignments/:id/failed`
 
 Companies, trucks, categories, feedback, and admin routes are implemented in their matching `routes/` and `controllers/` files.
+
+Recurring pickup schedules (customers):
+
+- `POST /api/schedules` — create a weekly/bi-weekly/monthly schedule; generates the next 4 pickups
+- `GET /api/schedules/my-schedules`
+- `PUT /api/schedules/:id`
+- `PUT /api/schedules/:id/pause`
+- `PUT /api/schedules/:id/resume`
+- `DELETE /api/schedules/:id`
+
+Driver ratings (customers rate drivers after collection; managers/admins view summaries):
+
+- `POST /api/driver-ratings` — body: `{ pickup_request_id, rating (1-5), comment? }`
+- `GET /api/driver-ratings/my`
+- `GET /api/driver-ratings/pickup/:pickupId`
+- `GET /api/driver-ratings/summary` — manager/admin averages per driver
+
+Favourite locations:
+
+- `PUT /api/locations/:id/favourite` — toggles `is_favourite` (owner only); `GET /api/locations/my-locations` returns favourites first
 
 ## Default Accounts
 
